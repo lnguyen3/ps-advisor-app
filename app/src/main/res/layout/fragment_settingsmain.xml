@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/settingsmain"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/settings_background"
-    android:orientation="vertical"
-    android:padding="15dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/settingsmain"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/settings_background"
+              android:orientation="vertical"
+              android:padding="15dp">
 
     <LinearLayout
         android:id="@+id/settings_login"
@@ -28,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="hi"
+            tools:text="hi"
             android:textSize="36sp"
             android:textStyle="bold"
             android:textColor="@color/settings_login_username"/>
@@ -38,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="28dp"
-            android:background="@drawable/settings_login_logoutbutton"
+            android:background="@drawable/all_button_large"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingStart="30dp"
