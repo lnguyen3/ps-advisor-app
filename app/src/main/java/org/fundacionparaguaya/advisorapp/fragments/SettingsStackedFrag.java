@@ -51,8 +51,8 @@ public class SettingsStackedFrag extends AbstractStackedFrag {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settingsmain, container, false);
 
-        mLogout = (Button) view.findViewById(R.id.button_settingsmain_logout);
-        mUsername = (TextView) view.findViewById(R.id.settingsmain_username);
+        mLogout = (Button) view.findViewById(R.id.settings_login_logout);
+        mUsername = (TextView) view.findViewById(R.id.setting_login_username);
 
         mUsername.setText(mSettingsViewModel.getAuthManager().getUser().getUsername());
 

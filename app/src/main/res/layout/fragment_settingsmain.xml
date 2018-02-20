@@ -1,29 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settingsmain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/settings_background"
-    android:padding="15dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="15dp">
 
-    <TextView
-        android:id="@+id/settingsmain_username"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/settings_login"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="hi"
-        android:textStyle="bold"/>
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/settings_login_background"
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/button_settingsmain_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_logout"
-        android:textColor="@color/settings_logout_buttonText"
-        android:background="@color/settings_logout_button"
-        android:textStyle="bold"
-        android:padding="3dp"/>
+        <ImageView
+            android:id="@+id/settings_login_image"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_margin="24dp"/>
+
+        <TextView
+            android:id="@+id/setting_login_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="hi"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:textColor="@color/settings_login_username"/>
+
+        <Button
+            android:id="@+id/settings_login_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="28dp"
+            android:background="@drawable/settings_login_logoutbutton"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="@string/settings_logout"
+            android:textSize="22sp"
+            android:textColor="@color/settings_logout_buttonText"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 
 </LinearLayout>
