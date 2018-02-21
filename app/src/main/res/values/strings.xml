@@ -40,6 +40,7 @@
 
     <!-- Survey Activity -->
     <string name="surveyintro_newsnapshot">New Snapshot</string>
+    <string name="surveyintro_availablesurveys">Available Surveys</string>
     <string name="survey_back">Back</string>
     <string name="survey_next">Next</string>
     <string name="survey_finish">Finish</string>
@@ -122,7 +123,6 @@
     <string name="prioritychooser_greenselected">Choose a Red or Yellow Indicator</string>
     <string name="choosepriorities_title">Life Map</string>
     <string name="all_save">Save</string>
-    <string name="available_surveys">Available Surveys</string>
     <string name="spinner_placeholder">Select an option&#8230;</string>
     <string name="familydetail_nullmember_title">This Family Can\'t Be Resurveyed</string>
     <string name="familydetail_nullmember_content">Resurveying this family isn\'t currently supported. Don\'t worry, we
