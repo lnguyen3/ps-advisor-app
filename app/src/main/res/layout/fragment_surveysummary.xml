@@ -23,6 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:paddingStart="0dp"
         android:paddingEnd="36dp"
         app:surveysummary_title="@string/survey_summary_indicatortitle"
         app:layout_constraintTop_toTopOf="parent"
