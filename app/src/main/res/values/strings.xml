@@ -88,6 +88,8 @@
 
     <!--Settings-->
     <string name="settings_logout">Log Out</string>
+    <string name="settings_releasenumber">Release Number</string>
+    <string name="settings_releasenumber_error">Error Retrieving Release Number</string>
 
     <!--Other-->
     <string name="all_continue">Continue</string>

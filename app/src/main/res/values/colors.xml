@@ -58,7 +58,10 @@
     <color name="surveysummary_background">#F2F2F2</color>
 
     <!-- Settings Colors -->
-    <color name="settings_background">@color/app_white</color>
-    <color name="settings_logout_buttonText">@color/settings_background</color>
+    <color name="settings_background">@color/app_offwhite</color>
+    <color name="settings_login_background">@color/app_white</color>
+    <color name="settings_login_username">@color/app_black</color>
+    <color name="settings_logout_button">@color/app_black</color>
+    <color name="settings_logout_buttonText">@color/app_white</color>
 
 </resources>

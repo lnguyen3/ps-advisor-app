@@ -23,7 +23,7 @@
             android:layout_margin="24dp"/>
 
         <TextView
-            android:id="@+id/setting_login_username"
+            android:id="@+id/settings_login_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -41,10 +41,17 @@
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:text="@string/settings_logout"
+            android:textSize="22sp"
+            android:textColor="@color/settings_logout_buttonText"
             android:textAppearance="@style/CardHeading.Light"
             android:textStyle="bold" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/settings_releasenumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>
