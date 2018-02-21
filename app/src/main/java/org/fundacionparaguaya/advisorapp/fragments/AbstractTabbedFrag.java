@@ -1,6 +1,5 @@
 package org.fundacionparaguaya.advisorapp.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import org.fundacionparaguaya.advisorapp.R;
 import org.fundacionparaguaya.advisorapp.fragments.callbacks.DisplayBackNavListener;
 import org.fundacionparaguaya.advisorapp.fragments.callbacks.NavigationListener;
@@ -28,17 +26,13 @@ public abstract class AbstractTabbedFrag extends Fragment implements NavigationL
     //view id the fragment will be placed in
     private int mContainerId;
 
-    private boolean showBack = false;
-
     //was back nav required the last time we navigated
     boolean mWasBackNavRequired;
 
     protected static String HAS_BEEN_INIT_KEY = "HAS_BEEN_INITIALIZED";
-    protected static String SHOW_BACK = "SHOW_BACK";
     boolean mHasBeenInitialized = false;
 
     private String mTabTitle = "";
-    
 
     public void setTabTitle(String title) {
         mTabTitle = title;
@@ -51,9 +45,20 @@ public abstract class AbstractTabbedFrag extends Fragment implements NavigationL
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            showBack = (boolean) savedInstanceState.get(SHOW_BACK);
+
+        try {
+            //if this is a nested fragment
+            if (getParentFragment() != null) {
+                mDisplayBackNavListener = (DisplayBackNavListener) getParentFragment();
+            } else {
+                //nested inside of an activity
+                mDisplayBackNavListener = (DisplayBackNavListener) getActivity();
+            }
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Parent activity or fragment must implement ShowBackNavCallback");
         }
+
+        mWasBackNavRequired = isBackNavRequired();
     }
 
     @Override
@@ -73,11 +78,9 @@ public abstract class AbstractTabbedFrag extends Fragment implements NavigationL
                 if (mWasBackNavRequired) //if required
                 {
                     mDisplayBackNavListener.onShowBackNav();
-                    showBack = true;
                 } else //if not required
                 {
                     mDisplayBackNavListener.onHideBackNav();
-                    showBack = false;
                 }
             }
         });
@@ -89,12 +92,11 @@ public abstract class AbstractTabbedFrag extends Fragment implements NavigationL
     public void onResume() {
         super.onResume();
 
-        if (showBack) {
+        if (isBackNavRequired()) {
             mDisplayBackNavListener.onShowBackNav();
         } else {
             mDisplayBackNavListener.onHideBackNav();
         }
-
     }
 
     /**
@@ -159,23 +161,6 @@ public abstract class AbstractTabbedFrag extends Fragment implements NavigationL
 
     protected abstract AbstractStackedFrag makeInitialFragment();
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            //if this is a nested fragment
-            if (getParentFragment() != null) {
-                mDisplayBackNavListener = (DisplayBackNavListener) getParentFragment();
-            } else {
-                //nested inside of an activity
-                mDisplayBackNavListener = (DisplayBackNavListener) context;
-            }
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Parent activity or fragment must implement ShowBackNavCallback");
-        }
-    }
-
     /**
      * Saves whether or not this tab has already been initialized (and had first fragment set)
      *
@@ -184,7 +169,6 @@ public abstract class AbstractTabbedFrag extends Fragment implements NavigationL
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(HAS_BEEN_INIT_KEY, mHasBeenInitialized);
-        outState.putBoolean(SHOW_BACK, showBack);
         super.onSaveInstanceState(outState);
     }
 }

@@ -1,37 +1,13 @@
 package org.fundacionparaguaya.advisorapp.data.remote.intermediaterepresentation;
 
-import org.fundacionparaguaya.advisorapp.models.BackgroundQuestion;
-import org.fundacionparaguaya.advisorapp.models.Family;
-import org.fundacionparaguaya.advisorapp.models.FamilyMember;
-import org.fundacionparaguaya.advisorapp.models.Indicator;
-import org.fundacionparaguaya.advisorapp.models.IndicatorOption;
-import org.fundacionparaguaya.advisorapp.models.IndicatorQuestion;
-import org.fundacionparaguaya.advisorapp.models.LifeMapPriority;
-import org.fundacionparaguaya.advisorapp.models.Login;
-import org.fundacionparaguaya.advisorapp.models.ResponseType;
-import org.fundacionparaguaya.advisorapp.models.Snapshot;
-import org.fundacionparaguaya.advisorapp.models.Survey;
+import org.fundacionparaguaya.advisorapp.models.*;
 
-import java.text.CharacterIterator;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.text.StringCharacterIterator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
+import java.text.*;
+import java.util.*;
 
 import static org.fundacionparaguaya.advisorapp.models.BackgroundQuestion.QuestionType.ECONOMIC;
 import static org.fundacionparaguaya.advisorapp.models.BackgroundQuestion.QuestionType.PERSONAL;
-import static org.fundacionparaguaya.advisorapp.models.IndicatorOption.Level.Green;
-import static org.fundacionparaguaya.advisorapp.models.IndicatorOption.Level.None;
-import static org.fundacionparaguaya.advisorapp.models.IndicatorOption.Level.Red;
-import static org.fundacionparaguaya.advisorapp.models.IndicatorOption.Level.Yellow;
+import static org.fundacionparaguaya.advisorapp.models.IndicatorOption.Level.*;
 
 /**
  * A utility for mapping IR objects to their corresponding model objects, and vice versa.
@@ -176,10 +152,12 @@ public class IrMapper {
         if (names == null || values == null) {
             return null;
         }
-        HashMap<String, String> options = new HashMap<>(values.size());
+
+        HashMap<String, String> options = new LinkedHashMap<>();
         for (int i = 0; i < values.size(); i++) {
             options.put(names.get(i), values.get(i));
         }
+
         return options;
     }
 

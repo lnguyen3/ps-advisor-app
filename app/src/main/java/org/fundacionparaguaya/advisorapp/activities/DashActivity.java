@@ -8,18 +8,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.novoda.merlin.Merlin;
-
 import org.fundacionparaguaya.advisorapp.AdvisorApplication;
 import org.fundacionparaguaya.advisorapp.R;
 import org.fundacionparaguaya.advisorapp.data.remote.AuthenticationManager;
-import org.fundacionparaguaya.advisorapp.fragments.AbstractTabbedFrag;
-import org.fundacionparaguaya.advisorapp.fragments.SocialTabFrag;
-import org.fundacionparaguaya.advisorapp.fragments.FamilyTabbedFragment;
-import org.fundacionparaguaya.advisorapp.fragments.MapTabFrag;
-import org.fundacionparaguaya.advisorapp.fragments.SettingsTabFrag;
+import org.fundacionparaguaya.advisorapp.fragments.*;
 import org.fundacionparaguaya.advisorapp.fragments.callbacks.DisplayBackNavListener;
 import org.fundacionparaguaya.advisorapp.jobs.SyncJob;
 import org.fundacionparaguaya.advisorapp.repositories.SyncManager;
@@ -123,7 +117,7 @@ public class DashActivity extends AbstractFragSwitcherActivity implements Displa
 
         setFragmentContainer(R.id.dash_content);
 
-        tabBarView = (DashboardTabBarView) findViewById(R.id.dashboardTabView);
+        tabBarView = findViewById(R.id.dashboardTabView);
 
         mSyncLabel = findViewById(R.id.topbar_synclabel);
         mLastSyncTextView = findViewById(R.id.last_sync_textview);
@@ -131,10 +125,26 @@ public class DashActivity extends AbstractFragSwitcherActivity implements Displa
         mTvTabTitle = findViewById(R.id.tv_topbar_tabtitle);
         mTvBackLabel = findViewById(R.id.tv_topbar_backlabel);
 
-        mSyncArea = (LinearLayout) findViewById(R.id.linearLayout_topbar_syncbutton);
+        mSyncArea = findViewById(R.id.linearLayout_topbar_syncbutton);
         mSyncArea.setOnClickListener(this::onSyncButtonPress);
 
         mSyncButtonIcon = findViewById(R.id.iv_topbar_syncimage);
+
+        mBackButton = findViewById(R.id.linearlayout_dashactivity_back);
+        mBackButton.setVisibility(View.GONE);
+        mBackButton.setOnClickListener((event)-> onBackPressed());
+
+        tabBarView.addTabSelectedHandler(handler);
+
+        ImageView fpLogo = findViewById(R.id.fp_logo);
+
+        if(ScreenCalculations.is7InchTablet(getApplicationContext()) && fpLogo !=null)
+        {
+            fpLogo.setVisibility(View.GONE);
+        }
+
+        /**end of view setup**/
+
 
         //update last sync label when the sync manager updates
         mSyncManager.getProgress().observe(this, (value) -> {
@@ -186,24 +196,17 @@ public class DashActivity extends AbstractFragSwitcherActivity implements Displa
                 DashboardTab.TabType previouslySelected = DashboardTab.TabType.valueOf(selectTypeName);
                 tabBarView.selectTab(previouslySelected);
                 switchToFrag(getClassForType(previouslySelected));
+
+                if(((AbstractTabbedFrag)getFragment(getClassForType(previouslySelected))).isBackNavRequired())
+                {
+                    onShowBackNav();
+                }
+                else onHideBackNav();
             }
         }
         else
         {
             switchToFrag(FamilyTabbedFragment.class);
-        }
-
-        mBackButton = findViewById(R.id.linearlayout_dashactivity_back);
-        mBackButton.setVisibility(View.GONE);
-        mBackButton.setOnClickListener((event)-> onBackPressed());
-
-        tabBarView.addTabSelectedHandler(handler);
-
-        ImageView fpLogo = findViewById(R.id.fp_logo);
-
-        if(ScreenCalculations.is7InchTablet(getApplicationContext()) && fpLogo !=null)
-        {
-            fpLogo.setVisibility(View.GONE);
         }
     }
 
