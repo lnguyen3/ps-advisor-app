@@ -9,7 +9,7 @@
     <!--Tab Captions -->
     <string name="familytab_title">Families</string>
     <string name="maptab_title">Map</string>
-    <string name="archivetab_title">Archive</string>
+    <string name="socialtab_title">Social</string>
     <string name="settingstab_title">Settings</string>
 
     <!--Top Bar Strings-->
@@ -73,7 +73,7 @@
     <string name="familydetails_locationdefault">No Location</string>
     <string name="familydetails_descriptionlabel">Description</string>
     <string name="familydetails_descriptiondefault">No Description</string>
-    <string name="familydetails_prioritytitle">Prioritites</string>
+    <string name="familydetails_prioritytitle">Priorities</string>
     <string name="addfamily_new_family_title">New Family</string>
 
 

@@ -118,13 +118,10 @@ public class SharedSurveyViewModel extends ViewModel {
      */
     public void makeSnapshot(Survey survey) {
         mSurvey = survey;
-        Snapshot s = new Snapshot(mSurvey);
-
-        mSnapshot.setValue(new Snapshot(mSurvey));
-
-        mPriorities.setValue(s.getPriorities());
-
-        mIndicatorResponses.setValue(s.getIndicatorResponses().values());
+        Snapshot snapshot = new Snapshot(mFamily.getValue(), mSurvey);
+        mSnapshot.setValue(snapshot);
+        mPriorities.setValue(snapshot.getPriorities());
+        mIndicatorResponses.setValue(snapshot.getIndicatorResponses().values());
     }
 
     public LiveData<Snapshot> getSnapshot() {
@@ -178,7 +175,7 @@ public class SharedSurveyViewModel extends ViewModel {
     }
 
 
-    public LiveData<Collection<IndicatorOption>> getIndicatorResponses() {
+    public LiveData<Collection<IndicatorOption>> getSnapshotIndicators() {
         return mIndicatorResponses;
     }
 
@@ -241,11 +238,13 @@ public class SharedSurveyViewModel extends ViewModel {
         updateIndicatorLiveData();
     }
 
-    public boolean hasResponse(IndicatorQuestion question) {
+    public boolean hasResponse(IndicatorQuestion question)
+    {
         return mSnapshot.getValue().getIndicatorResponses().get(question) != null;
     }
 
-    public boolean hasIndicatorResponse(int i) {
+    public boolean hasIndicatorResponse(int i)
+    {
         return hasResponse(mSurvey.getIndicatorQuestions().get(i));
     }
 

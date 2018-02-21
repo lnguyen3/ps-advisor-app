@@ -3,7 +3,6 @@ package org.fundacionparaguaya.advisorapp.viewcomponents;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -32,7 +31,7 @@ public class DashboardTab extends LinearLayout {
     public enum TabType {
         FAMILY,
         MAP,
-        ARCHIVE,
+        SOCIAL,
         SETTINGS
     }
 
@@ -114,11 +113,11 @@ public class DashboardTab extends LinearLayout {
     public void setSelected(boolean isSelected){
         if (isSelected) {
             mTabLayout.setBackgroundResource(R.color.dashboardtab_tabselected);
-            mImageIcon.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(context, R.color.dashboardtab_insideselected), PorterDuff.Mode.MULTIPLY));//Change Icon Color
+            mImageIcon.setColorFilter(ContextCompat.getColor(context, R.color.dashboardtab_insideselected), PorterDuff.Mode.SRC_IN);
             mTextViewCaption.setTextColor(ContextCompat.getColor(context, R.color.dashboardtab_insideselected));//Change Text Color
         } else {
             mTabLayout.setBackgroundResource(R.color.dashboardtab_tabnotselected);
-            mImageIcon.setColorFilter(R.color.dashboardtab_insidenotselected);//Change Icon Color
+            mImageIcon.setColorFilter(ContextCompat.getColor(context, R.color.dashboardtab_insidenotselected), PorterDuff.Mode.SRC_IN);
             mTextViewCaption.setTextColor(getResources().getColor(R.color.dashboardtab_insidenotselected));//Change Text Color
         }
     }
