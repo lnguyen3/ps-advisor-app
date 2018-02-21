@@ -26,7 +26,7 @@ public class LifeMapAdapter extends RecyclerView.Adapter {
     private LifeMapFragmentCallback mClickHandler;
 
     public void setIndicators(Collection<IndicatorOption> responses) {
-        if (mResponses == null && responses != null) {
+        if (responses != null) {
             mResponses = IndicatorUtilities.getResponsesAscending(responses);
         }
 
