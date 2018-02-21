@@ -13,15 +13,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.Spinner;
-import android.widget.TextView;
-
+import android.widget.*;
 import org.fundacionparaguaya.advisorapp.R;
+import org.fundacionparaguaya.advisorapp.adapters.SelectedFirstSpinnerAdapter;
 import org.fundacionparaguaya.advisorapp.adapters.SurveyQuestionReviewAdapter;
-import org.fundacionparaguaya.advisorapp.adapters.SurveyQuestionSpinnerAdapter;
 import org.fundacionparaguaya.advisorapp.fragments.callbacks.BackgroundQuestionCallback;
 import org.fundacionparaguaya.advisorapp.models.BackgroundQuestion;
 
@@ -129,7 +124,7 @@ public abstract class QuestionFragment extends Fragment {
     public static class DropdownQuestionFrag extends QuestionFragment {
 
         private Spinner mSpinnerOptions;
-        private SurveyQuestionSpinnerAdapter mSpinnerAdapter;
+        private SelectedFirstSpinnerAdapter<String> mSpinnerAdapter;
 
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -161,7 +156,7 @@ public abstract class QuestionFragment extends Fragment {
             if(mQuestion.getOptions() != null){
 
                 mSpinnerAdapter =
-                        new SurveyQuestionSpinnerAdapter(getContext(), R.layout.item_tv_questionspinner);
+                        new SelectedFirstSpinnerAdapter<>(getContext(), R.layout.item_tv_questionspinner);
 
                 mSpinnerAdapter.setValues(mQuestion.getOptions().keySet().toArray(
                         new String[mQuestion.getOptions().size()]));
