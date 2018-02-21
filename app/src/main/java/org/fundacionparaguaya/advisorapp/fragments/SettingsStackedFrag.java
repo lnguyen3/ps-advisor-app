@@ -1,6 +1,7 @@
 package org.fundacionparaguaya.advisorapp.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.fundacionparaguaya.advisorapp.AdvisorApplication;
 import org.fundacionparaguaya.advisorapp.R;
@@ -27,6 +29,8 @@ public class SettingsStackedFrag extends AbstractStackedFrag {
 
     private Button mLogout;
     private TextView mUsername;
+
+    private TextView mReleaseNum;
 
     protected @Inject
     InjectionViewModelFactory mViewModelFactory;
@@ -52,10 +56,20 @@ public class SettingsStackedFrag extends AbstractStackedFrag {
         View view = inflater.inflate(R.layout.fragment_settingsmain, container, false);
 
         mLogout = (Button) view.findViewById(R.id.settings_login_logout);
-        mUsername = (TextView) view.findViewById(R.id.setting_login_username);
+        mUsername = (TextView) view.findViewById(R.id.settings_login_username);
+
+        mReleaseNum = view.findViewById(R.id.settings_releasenumber);
+        String version = "";
 
         mUsername.setText(mSettingsViewModel.getAuthManager().getUser().getUsername());
+        try {
+            version = getString(R.string.settings_releasenumber) + ": " +
+                    getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
 
+        } catch (PackageManager.NameNotFoundException e){
+            version = getString(R.string.settings_releasenumber_error);
+        }
+        mReleaseNum.setText(version);
         return view;
     }
 

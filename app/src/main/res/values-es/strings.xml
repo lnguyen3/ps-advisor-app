@@ -106,6 +106,9 @@
 
     <!--Settings-->
     <string name="settings_logout">Cerrar la Sesión</string>
+    <string name="settings_releasenumber">Número de versión</string>
+    <string name="settings_releasenumber_error">Error al Recuperar el Número de Versión</string>
+
 
     <!-- Other -->
 
