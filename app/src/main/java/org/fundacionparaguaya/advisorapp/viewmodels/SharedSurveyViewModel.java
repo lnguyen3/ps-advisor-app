@@ -162,6 +162,10 @@ public class SharedSurveyViewModel extends ViewModel {
      */
     public void makeSnapshot(Survey survey) {
         Snapshot s= new Snapshot(mFamily.getValue(), survey);
+
+        if(mFamily.getValue()!=null) setSurveyState(SurveyState.ECONOMIC_QUESTIONS);
+        else setSurveyState(SurveyState.BACKGROUND);
+
         setSnapshot(s);
         startSurvey(survey);
     }
@@ -210,7 +214,11 @@ public class SharedSurveyViewModel extends ViewModel {
     }
 
     public void setSurveyState(SurveyState state) {
-        mSurveyState.setValue(state);
+        if(state!=mSurveyState.getValue())
+        {
+            mSurveyState.setValue(state);
+        }
+
         calculateProgress();
     }
 

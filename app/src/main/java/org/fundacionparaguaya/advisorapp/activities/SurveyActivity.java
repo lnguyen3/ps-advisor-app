@@ -75,7 +75,7 @@ public class SurveyActivity extends AbstractFragSwitcherActivity
 
         setFragmentContainer(R.id.fragment_container);
 
-        if(savedInstanceState==null) {
+        if(savedInstanceState == null) {
             initViewModel();
         }
     }
@@ -98,22 +98,17 @@ public class SurveyActivity extends AbstractFragSwitcherActivity
 
         mSurveyViewModel.setFamily(familyId);
 
-        //observe changes for family, when it has a value then show intro.
-        mSurveyViewModel.CurrentFamily().observe(this, family ->
-        {
-            mSurveyViewModel.SurveyInProgress().observe(this, survey -> {
-                if(family!=null)
-                {
-                    mSurveyViewModel.setSurveyState(SurveyState.ECONOMIC_QUESTIONS);
-                }
+        mSurveyViewModel.setSurveyState(SurveyState.INTRO);
+        switchToFrag(ChooseSurveyFragment.class);
 
-                if (survey != null) {
-                    switchToFrag(TakeSurveyFragment.class);
-                }
-                else {
-                    switchToFrag(ChooseSurveyFragment.class);
-                }
-            });
+        mSurveyViewModel.getSurveyState().observe(this, state->
+        {
+            if(state!=null && state!=SurveyState.INTRO)
+            {
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fragment_container, new TakeSurveyFragment()).commit();
+                mSurveyViewModel.getSurveyState().removeObservers(this);
+            }
         });
     }
 

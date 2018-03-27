@@ -58,7 +58,7 @@
     <string name="survey_chooselocation">Escoger Localización</string>
     <string name="surveyreview_noresponse">Ninguna respuesta</string>
     <string name="resumesnapshotpopup_snapshottitle">%1$s Familia</string>
-    <string name="resumesnapshotpopup_dismiss">Despedir</string>
+    <string name="resumesnapshotpopup_dismiss">Cancelar</string>
     <string name="your_response">Tu respuesta…</string>
     <string name="your_responses">Tu Respuestas</string>
 

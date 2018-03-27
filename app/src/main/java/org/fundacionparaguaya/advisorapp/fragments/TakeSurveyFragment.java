@@ -55,6 +55,22 @@ public class TakeSurveyFragment extends Fragment implements  StepperLayout.Stepp
         mSurveyViewModel = ViewModelProviders
                 .of(getActivity(), modelFactory)
                 .get(SharedSurveyViewModel.class);
+
+        mSurveyViewModel.getSurveyState().observe(this, surveyState -> {
+            assert surveyState != null;
+            switch (surveyState)
+            {
+                case BACKGROUND:
+                case ECONOMIC_QUESTIONS:
+                    setOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+                    break;
+
+                default:
+                    setOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                    KeyboardUtils.hideKeyboard(mStepperLayout, getActivity());
+                    break;
+            }
+        });
     }
 
     @Nullable
@@ -80,26 +96,19 @@ public class TakeSurveyFragment extends Fragment implements  StepperLayout.Stepp
                     switch (surveyState)
                     {
                         case BACKGROUND:
-                            //todo update this with "Background Quesitons"
                             title = getResources().getString(R.string.survey_summary_backgroundtitle);
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
                             break;
 
                         case ECONOMIC_QUESTIONS:
                             title = getResources().getString(R.string.surveyquestions_economic_title);
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
                             break;
 
                         case INDICATORS:
                             title = getResources().getString(R.string.survey_summary_indicatortitle);
-                            KeyboardUtils.hideKeyboard(mStepperLayout, getActivity());
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                             break;
 
                         case LIFEMAP:
                             title = getResources().getString(R.string.life_map_title);
-                            KeyboardUtils.hideKeyboard(mStepperLayout, getActivity());
-                            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                             break;
 
                         case COMPLETE:
@@ -132,6 +141,13 @@ public class TakeSurveyFragment extends Fragment implements  StepperLayout.Stepp
         return view;
     }
 
+    private void setOrientation(int orientation)
+    {
+        if(getActivity().getRequestedOrientation() != orientation)
+        {
+            getActivity().setRequestedOrientation(orientation);
+        }
+    }
     /**
      * Checks whether the new state matches the pager. If not, move the pager to match the current state.
      *

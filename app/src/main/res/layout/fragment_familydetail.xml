@@ -29,7 +29,7 @@
                     android:layout_width="172dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    fresco:placeholderImage="@color/lightPrimary" />
+                    fresco:placeholderImage="@drawable/ic_family_placeholder" />
             <LinearLayout android:layout_width="wrap_content"
                           android:layout_height="match_parent"
                           android:layout_marginStart="20dp"
