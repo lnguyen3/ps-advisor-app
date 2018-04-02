@@ -142,6 +142,7 @@ public abstract class QuestionFragment extends Fragment {
             switch (mQuestion.getResponseType())
             {
                 case INTEGER:
+                case CURRENCY: // TODO: handle currency formatting
                     familyInfoEntry.setInputType(InputType.TYPE_CLASS_NUMBER);
                     break;
 

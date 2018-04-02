@@ -11,5 +11,6 @@ public enum ResponseType {
     INDICATOR,
     PHONE_NUMBER,
     PHOTO,
+    CURRENCY,
     LOCATION
 }

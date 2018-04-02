@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import org.fundacionparaguaya.advisorapp.ui.survey.questions.QuestionFragment;
+
 import org.fundacionparaguaya.advisorapp.data.model.BackgroundQuestion;
 
 import java.util.List;
@@ -60,6 +60,7 @@ public class SurveyQuestionAdapter extends FragmentStatePagerAdapter  {
                     case STRING:
                     case PHONE_NUMBER:
                     case INTEGER:
+                    case CURRENCY:
                         viewHolderType = STRING_INPUT;
                         break;
                     case DATE:

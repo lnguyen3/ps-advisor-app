@@ -182,6 +182,9 @@ public class IrMapper {
 
                 return ResponseType.STRING;
             case "number":
+                if (ir.format != null && ir.format.equals("numberFormat")) {
+                    return ResponseType.CURRENCY;
+                }
                 return ResponseType.INTEGER;
             case "integer":
                 return ResponseType.INTEGER;
@@ -286,7 +289,8 @@ public class IrMapper {
         Map<String, Object> ir = new HashMap<>();
         for (BackgroundQuestion question : responses.keySet()) {
             Object response = responses.get(question);
-            if (question.getResponseType() == ResponseType.INTEGER) {
+            if (question.getResponseType() == ResponseType.INTEGER
+                    || question.getResponseType() == ResponseType.CURRENCY) {
                 response = Integer.parseInt((String) response);
             }
             ir.put(question.getName(), response);
