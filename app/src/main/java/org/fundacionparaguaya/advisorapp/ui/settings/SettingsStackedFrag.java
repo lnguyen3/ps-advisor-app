@@ -60,7 +60,14 @@ public class SettingsStackedFrag extends AbstractStackedFrag {
         mReleaseNum = view.findViewById(R.id.settings_releasenumber);
         String version = "";
 
-        mUsername.setText(mSettingsViewModel.getAuthManager().getUser().getUsername());
+        String username = mSettingsViewModel.getAuthManager().getUser().getUsername();
+
+        if (username != null){
+            mUsername.setText(username);
+        } else {
+            mUsername.setText(getText(R.string.settings_nousername));
+        }
+
         try {
             version = getString(R.string.settings_releasenumber) + ": " +
                     getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
