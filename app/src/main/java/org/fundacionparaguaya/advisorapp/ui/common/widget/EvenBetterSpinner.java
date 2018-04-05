@@ -65,14 +65,16 @@ public class EvenBetterSpinner extends BetterSpinner {
     }
 
     public void setSelectedPosition(int position) {
-        selectedPosition = position;
-        ListAdapter adapter = getAdapter();
-        if (adapter == null) {
-            setText("");
-            return;
+        if(position >= 0) {
+            selectedPosition = position;
+            ListAdapter adapter = getAdapter();
+            if (adapter == null) {
+                setText("");
+                return;
+            }
+            Object object = getAdapter().getItem(position);
+            setText(object == null ? "" : object.toString());
         }
-        Object object = getAdapter().getItem(position);
-        setText(object == null ? "" : object.toString());
     }
 
     public void selectFirstItem()
@@ -80,9 +82,8 @@ public class EvenBetterSpinner extends BetterSpinner {
         if(getAdapter().getCount()>0)
         {
             setSelectedPosition(0);
+            onItemClick(null, null, getSelectedPosition(), this.getId());
         }
-
-        onItemClick(null, null, getSelectedPosition(), this.getId());
     }
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
