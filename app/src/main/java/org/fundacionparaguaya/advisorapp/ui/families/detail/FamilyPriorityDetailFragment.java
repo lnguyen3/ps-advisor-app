@@ -5,30 +5,29 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import org.fundacionparaguaya.advisorapp.AdvisorApplication;
 import org.fundacionparaguaya.advisorapp.R;
 import org.fundacionparaguaya.advisorapp.data.model.IndicatorOption;
 import org.fundacionparaguaya.advisorapp.data.model.LifeMapPriority;
+import org.fundacionparaguaya.advisorapp.injection.InjectionViewModelFactory;
+import org.fundacionparaguaya.advisorapp.ui.base.AbstractStackedFrag;
 import org.fundacionparaguaya.advisorapp.ui.common.widget.HeaderBodyView;
 import org.fundacionparaguaya.advisorapp.ui.common.widget.IndicatorCard;
-import org.fundacionparaguaya.advisorapp.injection.InjectionViewModelFactory;
-
-import java.text.SimpleDateFormat;
+import org.fundacionparaguaya.advisorapp.util.ScreenUtils;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 
 /**
  * This fragment requires a
  * {@link FamilyDetailViewModel to exist within
  * it's context.}
  */
-public class FamilyPriorityDetailFragment extends Fragment {
+public class FamilyPriorityDetailFragment extends AbstractStackedFrag {
 
     HeaderBodyView mProblemView;
     HeaderBodyView mSolutionView;
@@ -47,7 +46,6 @@ public class FamilyPriorityDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         ((AdvisorApplication) getActivity().getApplication())
                 .getApplicationComponent()
@@ -72,17 +70,42 @@ public class FamilyPriorityDetailFragment extends Fragment {
         mDueDateView = view.findViewById(R.id.headerbody_prioritydetail_date);
         mPriorityIndicatorCard = view.findViewById(R.id.indicatorcard_prioritydetail);
 
+        observeViewModel();
+
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        subscribeToViewModel();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        View backButton = view.findViewById(R.id.btn_prioritydetail_back);
+
+        if(!ScreenUtils.isLandscape(getContext()) && getFragmentManager().getBackStackEntryCount() > 0)
+        {
+            backButton.setVisibility(View.VISIBLE);
+            backButton.setOnClickListener(l->
+            {
+                removeViewmodelObservers();
+                navigateBack();
+            });
+        }
+        else
+        {
+            backButton.setVisibility(View.GONE);
+        }
     }
 
-    public void subscribeToViewModel() {
+    public void observeViewModel() {
         mFamilyInformationViewModel.SelectedPriority().observe(this, this::bindPriority);
+    }
+
+    public void removeViewmodelObservers()
+    {
+        mFamilyInformationViewModel.SelectedPriority().removeObservers(this);
+
+        if(mIndicatorResponse!=null)
+        {
+            mIndicatorResponse.removeObservers(this);
+        }
     }
 
     public void bindPriority(@Nullable LifeMapPriority priority) {
@@ -125,23 +148,14 @@ public class FamilyPriorityDetailFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        if(mIndicatorResponse!=null)
-        {
-            mIndicatorResponse.removeObservers(this);
-        }
-
-        super.onDetach();
-    }
-
-
-    @Override
     public void onDestroyView() {
         mProblemView = null;
         mSolutionView = null;
         mDueDateView = null;
         mPriorityIndicatorCard = null;
         mTitle = null;
+
+        removeViewmodelObservers();
 
         super.onDestroyView();
     }
