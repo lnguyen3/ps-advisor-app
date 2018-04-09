@@ -82,24 +82,6 @@ public class MixpanelHelper {
         }
     }
 
-    public static class BugEvents
-    {
-        static String missedCache = "Survey Images Missed Cache";
-
-        public static void imagesMissedCache(Context c, int missed)
-        {
-            JSONObject props = new JSONObject();
-
-            try {
-                props.put("num_missed", missed);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            getMixpanel(c).track(missedCache, props);
-        }
-    }
-
     public static class SyncEvents
     {
         private static final String SYNC_BUTTON_PRESSED = "Sync Button Pressed";
