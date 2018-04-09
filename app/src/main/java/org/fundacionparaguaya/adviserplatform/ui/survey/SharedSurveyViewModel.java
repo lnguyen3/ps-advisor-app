@@ -12,6 +12,7 @@ import org.fundacionparaguaya.adviserplatform.data.model.*;
 import org.fundacionparaguaya.adviserplatform.data.repositories.FamilyRepository;
 import org.fundacionparaguaya.adviserplatform.data.repositories.SnapshotRepository;
 import org.fundacionparaguaya.adviserplatform.data.repositories.SurveyRepository;
+import org.fundacionparaguaya.adviserplatform.jobs.SyncJob;
 import org.fundacionparaguaya.adviserplatform.util.IndicatorUtilities;
 
 import java.lang.ref.WeakReference;
@@ -539,13 +540,21 @@ public class SharedSurveyViewModel extends ViewModel {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
             SharedSurveyViewModel viewModel = viewModelReference.get();
             if (viewModel == null) {
                 return;
             }
 
             Snapshot snapshot = viewModel.getSnapshotValue();
-            viewModel.setFamily(snapshot.getFamilyId());
+
+            if(viewModel.getCurrentFamily() == null)
+            {
+                viewModel.setFamily(snapshot.getFamilyId());
+            }
+
+            SyncJob.sync();
+
             viewModel.setSurveyState(SurveyState.COMPLETE);
         }
     }
