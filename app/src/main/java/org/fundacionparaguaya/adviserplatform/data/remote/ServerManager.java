@@ -4,9 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-
 import org.fundacionparaguaya.adviserplatform.R;
+import timber.log.Timber;
 
 import javax.inject.Singleton;
 
@@ -30,8 +29,8 @@ public class ServerManager {
         mPreferences = sharedPreferences;
 
         mServers = new Server[] {
-            new Server("https","demo.backend.povertystoplight.org", 443, context.getString(R.string.login_serverdemo)),
             new Server("https","testing.backend.povertystoplight.org", 443, context.getString(R.string.login_servertest)),
+            new Server("https","demo.backend.povertystoplight.org", 443, context.getString(R.string.login_serverdemo)),
             new Server("http","povertystoplightiqp.org", 8080, context.getString(R.string.login_serverdev)),
         };
 
@@ -79,7 +78,7 @@ public class ServerManager {
 
     private void saveServerSelection(Server selected) {
         if (selected == null) {
-            Log.w(TAG, "saveServerSelection: Attempted to save a null selected server!");
+            Timber.w( "saveServerSelection: Attempted to save a null selected server!");
             return;
         }
         SharedPreferences.Editor editor = mPreferences.edit();
