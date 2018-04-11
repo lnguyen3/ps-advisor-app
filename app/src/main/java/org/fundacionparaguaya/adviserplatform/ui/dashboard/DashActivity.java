@@ -130,6 +130,7 @@ public class DashActivity extends AbstractFragSwitcherActivity implements Displa
 
         //update last sync label when the sync manager updates
         mSyncManager.getProgress().observe(this, (value) -> {
+
             if (value != null) {
                 if (value.getLastSyncedTime() == -1) {
                     mLastSyncTextView.setText(R.string.topbar_lastsync_never);
