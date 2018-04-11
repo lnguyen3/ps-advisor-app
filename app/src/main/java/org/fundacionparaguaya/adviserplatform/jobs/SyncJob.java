@@ -76,13 +76,22 @@ public class SyncJob extends Job {
                 .schedule();
     }
 
-    public static boolean isSyncInProgress()
+    /**
+     * Looks for any existing jobs that have been created (even if they haven't been ran)
+     * @return if there are job(s) that have been created for syncing
+     */
+    public static boolean isSyncAboutToStart()
     {
         boolean inProgress=false;
 
+        for(JobRequest jobRequest: JobManager.instance().getAllJobRequestsForTag(TAG))
+        {
+            inProgress|=(jobRequest.isExact() && jobRequest.getStartMs()<500);
+        }
+
         for(Job job: JobManager.instance().getAllJobsForTag(TAG))
         {
-            inProgress^=!job.isFinished();
+            inProgress |= !job.isFinished();
         }
 
         return inProgress;
