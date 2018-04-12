@@ -15,7 +15,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 19
+        versionCode 20
         versionName versioning.info.display
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
