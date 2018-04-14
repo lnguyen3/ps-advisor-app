@@ -54,6 +54,32 @@ jobs:
           name: Store Test Report
           path: app/build/reports/tests/testDebugUnitTest/
           destination: reports/tests/
+  deploy:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-27-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Dependencies
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - run:
+          name: Update Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          name: Save Dependencies
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - run:
+          name: Build Release APK
+          command: ./gradlew assembleRelease
+      - store_artifacts:
+          name: Store Release APK
+          path: app/build/outputs/apk/release/
+          destination: apk-release/
 
 workflows:
   version: 2
@@ -63,4 +89,11 @@ workflows:
           filters:
             tags:
               ignore: /.*/
-
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^[0-9]+\.[0-9]+\.[0-9]+$/
