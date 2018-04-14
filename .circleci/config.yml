@@ -5,6 +5,7 @@ experimental:
     branches:
       only:
         - master
+        - release/*
 
 jobs:
   build-and-test:
