@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
+import org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption;
 import org.fundacionparaguaya.adviserplatform.data.model.IndicatorQuestion;
 import org.fundacionparaguaya.adviserplatform.data.repositories.SurveyRepository;
 import org.jcodec.common.StringUtils;
@@ -20,47 +21,54 @@ public final class EditPriorityViewModel extends ViewModel {
     private String mReason;
     private String mAction;
     private Date mCompletionDate = null;
+
     private int numberOfMonths = 0;
 
     private final MutableLiveData<Integer> mQuestionsUnanswered = new MutableLiveData<>();
+    private IndicatorOption.Level mPovertyLevel;
 
     public EditPriorityViewModel(SurveyRepository repository) {
         this.repo = repository;
         updateUnansweredCount();
     }
 
-    public final String getReason() {
+    final String getReason() {
         return this.mReason;
     }
 
-    public final void setReason(String mReason) {
+    final void setReason(String mReason) {
         this.mReason = mReason;
         updateUnansweredCount();
     }
 
-    public final String getAction() {
+    String getAction() {
         return this.mAction;
     }
 
-    public final void setAction(String value) {
+    void setAction(String value) {
         this.mAction = value;
         updateUnansweredCount();
     }
 
-    public final Date getCompletionDate() {
+    Date getCompletionDate() {
         return this.mCompletionDate;
     }
 
-    public final void setCompletionDate(Date value) {
+    final void setCompletionDate(Date value) {
         this.mCompletionDate = value;
         updateUnansweredCount();
     }
 
-    public final void setIndicator(int surveyId, int indicatorIndex) {
+    final void setIndicator(int surveyId, int indicatorIndex) {
         mIndicator = Transformations.map(repo.getSurvey(surveyId), value -> value.getIndicatorQuestions().get(indicatorIndex));
     }
 
-    public final LiveData<IndicatorQuestion> getIndicator() {
+    final boolean isAchievement() {
+        return mPovertyLevel == IndicatorOption.Level.Green;
+    }
+
+
+    final LiveData<IndicatorQuestion> getIndicator() {
         if(mIndicator != null)
         {
             return mIndicator;
@@ -69,18 +77,28 @@ public final class EditPriorityViewModel extends ViewModel {
         throw new IllegalStateException("getIndicator called before surveyId and IndicatorIndex set");
     }
 
+
     boolean areRequirementsMet()
     {
-        return  mCompletionDate!=null &&
-                !StringUtils.isEmpty(mReason) &&
-                !StringUtils.isEmpty(mAction);
+        return getNumUnanswered() == 0;
+    }
+
+    void setLevel(IndicatorOption.Level level)
+    {
+        mPovertyLevel = level;
+        updateUnansweredCount();
+    }
+
+    IndicatorOption.Level getLevel()
+    {
+        return mPovertyLevel;
     }
 
     private void updateUnansweredCount()
     {
         int unanswered = 0;
 
-        if(numberOfMonths == 0 || mCompletionDate==null) unanswered++;
+        if(mPovertyLevel != IndicatorOption.Level.Green && (numberOfMonths == 0 || mCompletionDate==null)) unanswered++;
 
         if(StringUtils.isEmpty(mReason)) unanswered++;
 
@@ -89,13 +107,12 @@ public final class EditPriorityViewModel extends ViewModel {
         mQuestionsUnanswered.setValue(unanswered);
     }
 
-    public LiveData<Integer> NumberOfQuestionsUnanswered()
+    LiveData<Integer> NumberOfQuestionsUnanswered()
     {
         return mQuestionsUnanswered;
     }
 
-
-    public int getNumUnanswered()
+    int getNumUnanswered()
     {
         Integer value = mQuestionsUnanswered.getValue();
 
