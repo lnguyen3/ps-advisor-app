@@ -23,6 +23,7 @@ public class SurveyFamilyRecordFrag extends SurveyQuestionsFrag {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         ((AdviserApplication) getActivity().getApplication())
                 .getApplicationComponent()
@@ -31,11 +32,6 @@ public class SurveyFamilyRecordFrag extends SurveyQuestionsFrag {
         mSharedSurveyViewModel = ViewModelProviders
                 .of(getActivity(), mViewModelFactory)
                 .get(SharedSurveyViewModel.class);
-
-        setTitle(getString(R.string.survey_newfamily));
-        setShowFooter(false);
-
-        super.onCreate(savedInstanceState);
 
         mSharedSurveyViewModel.CurrentFamily().observe(this, family -> {
             if(family!=null) mQuestionAdapter.hideQuestions();
