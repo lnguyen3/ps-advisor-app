@@ -65,10 +65,8 @@ public abstract class QuestionFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    protected void loadQuestion()
+    {
         int questionIndex = getArguments().getInt(QUESTION_KEY, -1);
 
         if(questionIndex == -1)
@@ -114,6 +112,7 @@ public abstract class QuestionFragment extends Fragment {
      */
     protected void initQuestionView()
     {
+        loadQuestion();
         mTvQuestionTitle.setText(mQuestion.getDescription());
     }
 
@@ -133,6 +132,8 @@ public abstract class QuestionFragment extends Fragment {
         @Override
         protected void initQuestionView()
         {
+            super.initQuestionView();
+
             switch (mQuestion.getResponseType())
             {
                 case INTEGER:
@@ -149,8 +150,6 @@ public abstract class QuestionFragment extends Fragment {
             }
 
             familyInfoEntry.addTextChangedListener(this);
-
-            super.initQuestionView();
         }
 
         @Override
@@ -400,8 +399,6 @@ public abstract class QuestionFragment extends Fragment {
             super.onCreate(savedInstanceState);
 
             mSurveyReviewAdapter = new SurveyQuestionReviewAdapter();
-            mSurveyReviewAdapter.setQuestions(((ReviewCallback<BackgroundQuestion, String>)getParentFragment()).getQuestions());
-            ((ReviewCallback<BackgroundQuestion, String>)getParentFragment()).getResponses().observe(this, mSurveyReviewAdapter::setResponses);
         }
 
 
@@ -414,6 +411,9 @@ public abstract class QuestionFragment extends Fragment {
             mRv = v.findViewById(R.id.rv_questionsreview);
             mRv.setLayoutManager(new LinearLayoutManager(v.getContext()));
             mRv.setAdapter(mSurveyReviewAdapter);
+
+            mSurveyReviewAdapter.setQuestions(((ReviewCallback<BackgroundQuestion, String>)getParentFragment()).getQuestions());
+            ((ReviewCallback<BackgroundQuestion, String>)getParentFragment()).getResponses().observe(this, mSurveyReviewAdapter::setResponses);
 
             return v;
         }

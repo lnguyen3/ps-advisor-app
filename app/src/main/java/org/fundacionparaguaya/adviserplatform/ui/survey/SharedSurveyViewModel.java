@@ -119,7 +119,7 @@ public class SharedSurveyViewModel extends ViewModel {
             lastState = SurveyState.ECONOMIC_QUESTIONS;
         }
 
-        if(snapshot.getIndicatorResponses().size()!=0)
+        if(survey.getEconomicQuestions().size() == 0 || snapshot.getIndicatorResponses().size()!=0)
         {
             lastState = SurveyState.INDICATORS;
         }

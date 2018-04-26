@@ -41,15 +41,10 @@ public abstract class SurveyQuestionsFrag extends AbstractSurveyFragment impleme
         super();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mQuestionAdapter = new SurveyQuestionAdapter(getChildFragmentManager());
-    }
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        mQuestionAdapter = new SurveyQuestionAdapter(getChildFragmentManager());
 
         View view = inflater.inflate(R.layout.fragment_surveyquestions, container, false);
 
