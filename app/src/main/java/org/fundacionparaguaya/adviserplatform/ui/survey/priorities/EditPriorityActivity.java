@@ -120,28 +120,12 @@ public class EditPriorityActivity extends FragmentActivity implements View.OnCli
 
         mScrollView = findViewById(R.id.scroll_view);
 
-        //region Load Arguments
-        int surveyId = getIntent().getIntExtra(SURVEY_ID_ARG, -1);
-        int questionIndex = getIntent().getIntExtra(INDICATOR_INDEX_ARG, -1);
-
-        mViewModel.setIndicator(surveyId, questionIndex);
-
-        IndicatorOption.Level level = IndicatorOption.Level.valueOf(getIntent().getStringExtra(INDICATOR_LEVEL_ARG));
-        IndicatorUtilities.setColorFromLevel(level, mIndicatorColor);
-
-        if(level == IndicatorOption.Level.Green)
-        {
-            displayAsAchievement();
-        }
-
         if(savedInstanceState == null) //if we are loading for the first time, init view model from arguments
         {
-            viewModelInit();
+            viewmodelInit();
         }
 
-        mEtWhy.setText(mViewModel.getReason());
-        mEtStrategy.setText(mViewModel.getAction());
-        mMonthsStepper.setCurrentValue(mViewModel.getMonthsUntilCompletion());
+        bindViewmodel();
 
         addListeners();
     }
@@ -149,15 +133,21 @@ public class EditPriorityActivity extends FragmentActivity implements View.OnCli
     private void displayAsAchievement()
     {
         mMonthsStepper.setVisibility(View.INVISIBLE);
+        mMonthsStepper.setCurrentValue(1);
+
         mTvWhen.setVisibility(View.INVISIBLE);
-        mViewModel.setNumMonths(1);
 
         mTvWhy.setText(R.string.prioritypopup_achievementwhat);
         mTvHow.setText(R.string.prioritypopup_achievementhow);
     }
 
-    private void viewModelInit()
+    private void viewmodelInit()
     {
+        int surveyId = getIntent().getIntExtra(SURVEY_ID_ARG, -1);
+        int questionIndex = getIntent().getIntExtra(INDICATOR_INDEX_ARG, -1);
+
+        mViewModel.setIndicator(surveyId, questionIndex);
+
         String reason = getIntent().getStringExtra(RESPONSE_REASON_ARG);
         mViewModel.setReason(reason);
 
@@ -166,15 +156,21 @@ public class EditPriorityActivity extends FragmentActivity implements View.OnCli
 
         Date date = (Date)getIntent().getSerializableExtra(RESPONSE_DATE_ARG);
         mViewModel.setCompletionDate(date);
+
+        IndicatorOption.Level level = IndicatorOption.Level.valueOf(getIntent().getStringExtra(INDICATOR_LEVEL_ARG));
+        mViewModel.setLevel(level);
     }
 
-    public void addListeners()
+    private void bindViewmodel()
     {
-        mMonthsStepper.getValue().observe(this, mViewModel::setNumMonths);
-        mBtnExit.setOnClickListener(this);
-        mBtnSubmit.setOnClickListener(this);
-        mEtWhy.addTextChangedListener(this);
-        mEtStrategy.addTextChangedListener(this);
+        IndicatorOption.Level level = mViewModel.getLevel();
+
+        IndicatorUtilities.setColorFromLevel(level, mIndicatorColor);
+        if(mViewModel.isAchievement()) displayAsAchievement();
+
+        mEtWhy.setText(mViewModel.getReason());
+        mEtStrategy.setText(mViewModel.getAction());
+        mMonthsStepper.setCurrentValue(mViewModel.getMonthsUntilCompletion());
 
         mViewModel.NumberOfQuestionsUnanswered().observe(this, numUnanswered->
         {
@@ -199,6 +195,15 @@ public class EditPriorityActivity extends FragmentActivity implements View.OnCli
                 mIndicatorTitle.setText(indicator.getIndicator().getTitle());
             }
         });
+    }
+
+    public void addListeners()
+    {
+        mMonthsStepper.getValue().observe(this, mViewModel::setNumMonths);
+        mBtnExit.setOnClickListener(this);
+        mBtnSubmit.setOnClickListener(this);
+        mEtWhy.addTextChangedListener(this);
+        mEtStrategy.addTextChangedListener(this);
     }
 
     @Override
