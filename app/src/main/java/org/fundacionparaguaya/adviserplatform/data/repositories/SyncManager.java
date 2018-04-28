@@ -5,20 +5,15 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import org.fundacionparaguaya.adviserplatform.data.remote.ConnectivityWatcher;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.ERROR_NO_INTERNET;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.ERROR_OTHER;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.NEVER;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.SYNCED;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.SYNCING;
+import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.*;
 
 
 /**
@@ -83,12 +78,14 @@ public class SyncManager {
      * Synchronizes the local database with the remote one.
      * @return Whether the sync was successful.
      */
-    public boolean sync() {
+    public boolean sync(AtomicBoolean isAlive) {
         if (!isOnline) return false;
 
         Log.d(TAG, "sync: Synchronizing the database...");
         updateProgress(SYNCING);
         boolean result = true;
+
+        if(!isAlive.get()) return false;
 
         @Nullable Date lastSync;
         SyncProgress progress = mProgress.getValue();
@@ -98,24 +95,35 @@ public class SyncManager {
             lastSync = null;
         }
 
+        if(!isAlive.get()) return false;
+
         try {
             result &= mFamilyRepository.sync(lastSync);
         } catch (Exception e) {
             Log.e(TAG, "sync: Error while syncing!", e);
             result = false;
         }
+
+        if(!isAlive.get()) return false;
+
         try {
             result &= mSurveyRepository.sync(lastSync);
         } catch (Exception e) {
             Log.e(TAG, "sync: Error while syncing!", e);
             result = false;
         }
+
+        if(!isAlive.get()) return false;
+
         try {
             result &= mSnapshotRepository.sync(lastSync);
         } catch (Exception e) {
             Log.e(TAG, "sync: Error while syncing!", e);
             result = false;
         }
+
+        if(!isAlive.get()) return false;
+
         try {
             result &= mImageRepository.sync();
         } catch (Exception e) {

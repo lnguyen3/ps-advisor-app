@@ -10,6 +10,8 @@ import org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager;
 import org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager;
 import org.fundacionparaguaya.adviserplatform.util.MixpanelHelper;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * A job to sync the database.
  */
@@ -19,6 +21,7 @@ public class SyncJob extends Job {
     private static final long SYNC_INTERVAL_MS = 900000; //15 mins
     private SyncManager mSyncManager;
     private AuthenticationManager mAuthManager;
+    private AtomicBoolean mIsAlive = new AtomicBoolean(false);
 
     public SyncJob(SyncManager syncManager, AuthenticationManager authManager) {
         super();
@@ -27,9 +30,16 @@ public class SyncJob extends Job {
     }
 
     @Override
+    protected void onCancel() {
+        mIsAlive.set(false);
+    }
+
+    @Override
     @NonNull
     protected Result onRunJob(@NonNull Params params) {
         MixpanelHelper.SyncEvents.syncStarted(getContext());
+
+        mIsAlive.set(true);
 
         if(mAuthManager.getStatus() != AuthenticationManager.AuthenticationStatus.AUTHENTICATED)
         {
@@ -43,7 +53,7 @@ public class SyncJob extends Job {
 
         Result syncResult;
 
-        if (mSyncManager.sync()) {
+        if (mSyncManager.sync(mIsAlive)) {
             syncResult = Result.SUCCESS;
         }
         else
