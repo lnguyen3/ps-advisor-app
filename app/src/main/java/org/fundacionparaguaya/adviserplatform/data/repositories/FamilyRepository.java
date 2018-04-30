@@ -22,7 +22,7 @@ import static java.lang.String.format;
 /**
  * The utility for the storage of families and their members.
  */
-public class FamilyRepository {
+public class FamilyRepository extends BaseRepository {
     private static final String TAG = "FamilyRepository";
 
     private final FamilyDao familyDao;
@@ -78,7 +78,10 @@ public class FamilyRepository {
      * @return Whether the sync was successful.
      */
     boolean sync(@Nullable Date lastSync) {
-        return pullFamilies(lastSync);
+        boolean result = pullFamilies(lastSync);
+        clearSyncStatus();
+
+        return result;
     }
 
     void clean() {
@@ -87,6 +90,8 @@ public class FamilyRepository {
 
     private boolean pullFamilies(@Nullable Date lastSync) {
         try {
+            if(shouldAbortSync()) return false;
+
             Response<List<FamilyIr>> response;
             if (lastSync != null) {
                 String lastSyncString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US)
@@ -104,6 +109,9 @@ public class FamilyRepository {
 
             List<Family> families = IrMapper.mapFamilies(response.body());
             for (Family family : families) {
+
+                if(shouldAbortSync()) return false;
+
                 Family old = familyDao.queryRemoteFamilyNow(family.getRemoteId());
                 if (old != null) {
                     family.setId(old.getId());

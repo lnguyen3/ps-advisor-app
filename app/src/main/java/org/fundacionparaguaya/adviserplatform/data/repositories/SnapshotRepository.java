@@ -28,7 +28,7 @@ import static java.lang.String.format;
  * The utility for the storage of snapshots.
  */
 
-public class SnapshotRepository {
+public class SnapshotRepository extends BaseRepository{
     private static final String TAG = "SnapshotRepository";
 
     private final SnapshotDao snapshotDao;
@@ -230,6 +230,9 @@ public class SnapshotRepository {
 
         for (Family family : families) {
             for (Survey survey : surveyRepository.getSurveysNow()) {
+
+                if(shouldAbortSync()) return false;
+
                 success &= pullSnapshots(family, survey);
             }
         }

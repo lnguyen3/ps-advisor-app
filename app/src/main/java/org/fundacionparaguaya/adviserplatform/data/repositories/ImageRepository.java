@@ -12,15 +12,17 @@ import org.fundacionparaguaya.adviserplatform.data.model.IndicatorQuestion;
 import org.fundacionparaguaya.adviserplatform.data.model.Survey;
 import timber.log.Timber;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * The utility for the storage of snapshots.
  */
 
-public class ImageRepository {
+public class ImageRepository extends BaseRepository {
     private static final String TAG = "ImageRepository";
 
     private static final String NO_IMAGE= "NONE";
@@ -39,7 +41,7 @@ public class ImageRepository {
      * Synchronizes the local snapshots with the remote database.
      * @return Whether the sync was successful.
      */
-    boolean sync() {
+    boolean sync(@Nullable Date lastSync) {
 
         boolean result = true;
 
@@ -52,6 +54,8 @@ public class ImageRepository {
             {
                 for(IndicatorOption option: indicatorQuestion.getOptions())
                 {
+                    if(shouldAbortSync()) return false;
+
                     if(!option.getImageUrl().contains(NO_IMAGE)) {
                         Uri uri = Uri.parse(option.getImageUrl());
                         imagesDownloaded.add(uri);
@@ -60,6 +64,8 @@ public class ImageRepository {
                 }
             }
         }
+
+        clearSyncStatus();
 
         result &= verifyCacheResults(imagesDownloaded);
 
@@ -83,7 +89,6 @@ public class ImageRepository {
         {
             Timber.tag(TAG);
             Timber.e( "ERROR: " + notSaved + " out of " + uris.size() + " pictures not saved to cache.");
-            //MixpanelHelper.BugEvents.imagesMissedCache(get, notSaved);
         }
         else
         {

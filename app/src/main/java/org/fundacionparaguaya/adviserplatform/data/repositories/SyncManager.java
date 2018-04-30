@@ -85,8 +85,6 @@ public class SyncManager {
         updateProgress(SYNCING);
         boolean result = true;
 
-        if(!isAlive.get()) return false;
-
         @Nullable Date lastSync;
         SyncProgress progress = mProgress.getValue();
         if (progress != null && progress.getLastSyncedTime() != -1) {
@@ -94,6 +92,8 @@ public class SyncManager {
         } else {
             lastSync = null;
         }
+
+
 
         if(!isAlive.get()) return false;
 
