@@ -3,12 +3,16 @@ package org.fundacionparaguaya.adviserplatform.data.repositories;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager;
 import org.fundacionparaguaya.adviserplatform.data.remote.ConnectivityWatcher;
+import org.fundacionparaguaya.adviserplatform.jobs.SyncJob;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,7 +25,7 @@ import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManag
  */
 
 @Singleton
-public class SyncManager {
+public class SyncManager implements AuthenticationManager.AuthStateChangeHandler {
     public static final String TAG = "SyncManager";
     static final String KEY_LAST_SYNC_TIME = "lastSyncTime";
     static final long LAST_SYNC_ERROR_MARGIN // a margin which will always be resynced to
@@ -38,7 +42,7 @@ public class SyncManager {
     private MutableLiveData<SyncProgress> mProgress;
 
     @Inject
-    SyncManager(FamilyRepository familyRepository,
+    public SyncManager(FamilyRepository familyRepository,
                 SurveyRepository surveyRepository,
                 SnapshotRepository snapshotRepository,
                 ImageRepository imageRepository,
@@ -93,42 +97,18 @@ public class SyncManager {
             lastSync = null;
         }
 
+        BaseRepository[] repositoriesToSync = {mFamilyRepository, mSurveyRepository, mSnapshotRepository, mImageRepository};
 
+        for(BaseRepository repo: repositoriesToSync)
+        {
+            if(!isAlive.get()) return false;
 
-        if(!isAlive.get()) return false;
-
-        try {
-            result &= mFamilyRepository.sync(lastSync);
-        } catch (Exception e) {
-            Log.e(TAG, "sync: Error while syncing!", e);
-            result = false;
-        }
-
-        if(!isAlive.get()) return false;
-
-        try {
-            result &= mSurveyRepository.sync(lastSync);
-        } catch (Exception e) {
-            Log.e(TAG, "sync: Error while syncing!", e);
-            result = false;
-        }
-
-        if(!isAlive.get()) return false;
-
-        try {
-            result &= mSnapshotRepository.sync(lastSync);
-        } catch (Exception e) {
-            Log.e(TAG, "sync: Error while syncing!", e);
-            result = false;
-        }
-
-        if(!isAlive.get()) return false;
-
-        try {
-            result &= mImageRepository.sync();
-        } catch (Exception e) {
-            Log.e(TAG, "sync: Error while syncing!", e);
-            result = false;
+            try {
+                result &= repo.sync(isAlive, lastSync);
+            } catch (Exception e) {
+                Log.e(TAG, "sync: Error while syncing!", e);
+                result = false;
+            }
         }
 
         if (result) {
@@ -159,6 +139,11 @@ public class SyncManager {
         Log.d(TAG, "clean: Finished the database clean");
     }
 
+    public CleanTask makeCleanTask()
+    {
+        return new CleanTask(this);
+    }
+
     private void updateProgress(SyncState state) {
         SyncProgress progress = mProgress.getValue();
         if (progress == null) {
@@ -179,6 +164,24 @@ public class SyncManager {
             editor.remove(KEY_LAST_SYNC_TIME);
         }
         editor.apply();
+    }
+
+    @Override
+    public void onAuthStateChange(AuthenticationManager.AuthenticationStatus status) {
+        switch (status)
+        {
+            case UNAUTHENTICATED:
+                makeCleanTask().execute();
+                SyncJob.cancelAll();
+                break;
+
+            case AUTHENTICATED:
+                SyncJob.sync();
+                break;
+
+            default:
+                //not relevant to sync manager
+        }
     }
 
     /**
@@ -214,6 +217,26 @@ public class SyncManager {
 
         public long getLastSyncedTime() {
             return mLastSyncedTime;
+        }
+    }
+
+    public static class CleanTask extends AsyncTask<Void, Void, Void>
+    {
+        WeakReference<SyncManager> mSyncManager;
+
+        CleanTask(SyncManager manager)
+        {
+            mSyncManager = new WeakReference<>(manager);
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            if(mSyncManager.get()!=null)
+            {
+                mSyncManager.get().clean();
+            }
+
+            return null;
         }
     }
 }

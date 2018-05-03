@@ -9,7 +9,7 @@ import android.util.Log;
 import org.fundacionparaguaya.adviserplatform.BuildConfig;
 import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.IrMapper;
 import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.LoginIr;
-import org.fundacionparaguaya.adviserplatform.jobs.CleanJob;
+import org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager;
 import org.fundacionparaguaya.adviserplatform.jobs.SyncJob;
 import org.fundacionparaguaya.adviserplatform.data.model.Login;
 import org.fundacionparaguaya.adviserplatform.data.model.User;
@@ -41,11 +41,13 @@ public class AuthenticationManager {
         AUTHENTICATED
     }
 
+    private SyncManager mSyncManager;
     private SharedPreferences mPreferences;
     private AuthenticationService mAuthService;
     private User mUser;
     private MutableLiveData<AuthenticationStatus> mStatus;
     private ConnectivityWatcher mConnectivityWatcher;
+    private AuthStateChangeHandler mHandler;
 
     public AuthenticationManager(AuthenticationService authService,
                                  SharedPreferences sharedPreferences,
@@ -117,9 +119,9 @@ public class AuthenticationManager {
         try {
             updateStatus(PENDING);
             retrofit2.Response<LoginIr> response = mAuthService
-                        .loginWithRefreshToken(
-                                AUTH_KEY,
-                                refreshToken).execute();
+                    .loginWithRefreshToken(
+                            AUTH_KEY,
+                            refreshToken).execute();
 
             return updateLogin(User.builder().username(username).build(), response);
         } catch (IOException e) {
@@ -149,13 +151,15 @@ public class AuthenticationManager {
             Login newLogin = IrMapper.mapLogin(response.body());
             if (user == null) {
                 mUser = User.builder().login(newLogin).build();
-            } else {
+            }
+            else {
                 mUser = user;
                 mUser.setLogin(newLogin);
             }
             saveLogin();
             return updateStatus(AUTHENTICATED);
-        } else {
+        }
+        else {
             mUser = null;
             return updateStatus(UNAUTHENTICATED);
         }
@@ -175,21 +179,28 @@ public class AuthenticationManager {
         editor.apply();
     }
 
+    public void setAuthStateChangeHandler(AuthStateChangeHandler handler)
+    {
+        this.mHandler = handler;
+    }
+
     private AuthenticationStatus updateStatus(AuthenticationStatus newStatus) {
         if (newStatus == mStatus.getValue())
             return newStatus;
 
         mStatus.postValue(newStatus);
 
-        switch (newStatus) {
-            case AUTHENTICATED:
-                SyncJob.sync();
-                break;
-            case UNAUTHENTICATED:
-                SyncJob.cancelAll();
-                CleanJob.clean();
-                break;
-        }
+        mHandler.onAuthStateChange(newStatus);
+
         return newStatus;
     }
+    /**
+     * Auth state change handler
+     */
+
+    public interface AuthStateChangeHandler {
+        void onAuthStateChange(AuthenticationManager.AuthenticationStatus status);
+    }
+
+
 }

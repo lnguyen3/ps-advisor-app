@@ -34,8 +34,6 @@ public class JobCreator implements com.evernote.android.job.JobCreator {
         switch (tag) {
             case SyncJob.TAG:
                 return new SyncJob(mSyncManager, mAuthManager);
-            case CleanJob.TAG:
-                return new CleanJob(mSyncManager);
             default:
                 return null;
         }

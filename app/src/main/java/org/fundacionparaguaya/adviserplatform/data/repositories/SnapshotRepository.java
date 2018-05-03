@@ -241,6 +241,7 @@ public class SnapshotRepository extends BaseRepository{
 
     private boolean pullSnapshots(Family family, Survey survey) {
         try {
+            if(shouldAbortSync()) return false;
             // get the snapshots
             Response<List<SnapshotIr>> snapshotsResponse = snapshotService
                     .getSnapshots(survey.getRemoteId(), family.getRemoteId())
@@ -251,6 +252,8 @@ public class SnapshotRepository extends BaseRepository{
                         family.getRemoteId(), snapshotsResponse.errorBody().string()));
                 return false;
             }
+
+            if(shouldAbortSync()) return false;
 
             // get the snapshot overviews (which have the priorities)
             Response<List<SnapshotOverviewIr>> overviewsResponse = snapshotService
@@ -263,9 +266,13 @@ public class SnapshotRepository extends BaseRepository{
                 return false;
             }
 
+            if(shouldAbortSync()) return false;
+
             List<Snapshot> snapshots = IrMapper.
                     mapSnapshots(snapshotsResponse.body(), overviewsResponse.body(), family, survey);
             for (Snapshot snapshot : snapshots) {
+                if(shouldAbortSync()) return false;
+
                 Snapshot old = snapshotDao.queryRemoteSnapshotNow(snapshot.getRemoteId());
                 if (old != null) {
                     snapshot.setId(old.getId());

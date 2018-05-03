@@ -21,10 +21,7 @@ import org.fundacionparaguaya.adviserplatform.data.remote.ServerInterceptor;
 import org.fundacionparaguaya.adviserplatform.data.remote.ServerManager;
 import org.fundacionparaguaya.adviserplatform.data.remote.SnapshotService;
 import org.fundacionparaguaya.adviserplatform.data.remote.SurveyService;
-import org.fundacionparaguaya.adviserplatform.data.repositories.FamilyRepository;
-import org.fundacionparaguaya.adviserplatform.data.repositories.ImageRepository;
-import org.fundacionparaguaya.adviserplatform.data.repositories.SnapshotRepository;
-import org.fundacionparaguaya.adviserplatform.data.repositories.SurveyRepository;
+import org.fundacionparaguaya.adviserplatform.data.repositories.*;
 
 import javax.inject.Singleton;
 
@@ -102,8 +99,33 @@ public class DatabaseModule {
                 .baseUrl(URL_AUTH_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return new AuthenticationManager(authRetrofit.create(AuthenticationService.class),
+
+        AuthenticationManager authManager = new AuthenticationManager(authRetrofit.create(AuthenticationService.class),
                 sharedPreferences, connectivityWatcher);
+
+        return authManager;
+    }
+
+    @Provides
+    @Singleton
+    SyncManager provideSyncManager(FamilyRepository familyRepository,
+                                   SurveyRepository surveyRepository,
+                                   SnapshotRepository snapshotRepository,
+                                   ImageRepository imageRepository,
+                                   SharedPreferences preferences,
+                                   AuthenticationManager authenticationManager,
+                                   ConnectivityWatcher connectivityWatcher) {
+
+        SyncManager syncManager = new SyncManager(familyRepository,
+                surveyRepository,
+                snapshotRepository,
+                imageRepository,
+                preferences,
+                connectivityWatcher);
+
+        authenticationManager.setAuthStateChangeHandler(syncManager);
+
+        return syncManager;
     }
 
     @Provides

@@ -114,7 +114,7 @@ public class ImageRepository extends BaseRepository {
             try {
                 DataSources.waitForFinalResult(prefetchDataSource);
 
-                if(prefetchDataSource.isFinished()) Timber.d(TAG, "Downloaded Picture: " + imageUri.toString());
+                if(prefetchDataSource.isFinished()) Timber.d("Downloaded Picture: " + imageUri.toString());
 
             } catch (Throwable throwable) {
                 result = false; //error downloading
@@ -126,10 +126,7 @@ public class ImageRepository extends BaseRepository {
         return result;
     }
 
-    /**
-     * Clears all image caches
-     */
     void clean() {
-        Fresco.getImagePipeline().clearCaches();
+
     }
 }

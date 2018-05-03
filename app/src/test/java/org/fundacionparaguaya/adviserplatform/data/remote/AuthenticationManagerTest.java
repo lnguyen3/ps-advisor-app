@@ -8,7 +8,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.IrUtils;
 import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.LoginIr;
-import org.fundacionparaguaya.adviserplatform.jobs.CleanJob;
+import org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager;
 import org.fundacionparaguaya.adviserplatform.jobs.SyncJob;
 import org.fundacionparaguaya.adviserplatform.data.model.User;
 import org.junit.Before;
@@ -50,7 +50,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({SyncJob.class, CleanJob.class, Response.class})
+@PrepareForTest({SyncJob.class, Response.class})
 @SmallTest
 public class AuthenticationManagerTest {
     @Mock
@@ -65,6 +65,7 @@ public class AuthenticationManagerTest {
     Response<LoginIr> response;
     @Mock
     ConnectivityWatcher connectivityWatcher;
+
     private MutableLiveData<Boolean> isOnline;
 
     @Rule
@@ -84,7 +85,6 @@ public class AuthenticationManagerTest {
         when(call.execute()).thenReturn(response);
 
         mockStatic(SyncJob.class);
-        mockStatic(CleanJob.class);
     }
 
     @Test

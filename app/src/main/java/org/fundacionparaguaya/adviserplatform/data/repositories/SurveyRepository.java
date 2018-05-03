@@ -22,7 +22,7 @@ import static java.lang.String.format;
  * The utility for the storage of surveys and snapshots.
  */
 
-public class SurveyRepository {
+public class SurveyRepository extends BaseRepository{
     private static final String TAG = "SurveyRepository";
 
     private final SurveyDao surveyDao;
@@ -67,6 +67,8 @@ public class SurveyRepository {
 
     private boolean pullSurveys(@Nullable Date lastSync) {
         try {
+            if(shouldAbortSync()) return false;
+
             Response<List<SurveyIr>> response;
             if (lastSync != null) {
                 String lastSyncString = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
@@ -84,6 +86,8 @@ public class SurveyRepository {
 
             List<Survey> surveys = IrMapper.mapSurveys(response.body());
             for (Survey survey : surveys) {
+                if(shouldAbortSync()) return false;
+
                 Survey old = surveyDao.queryRemoteSurveyNow(survey.getRemoteId());
                 if (old != null) {
                     survey.setId(old.getId());

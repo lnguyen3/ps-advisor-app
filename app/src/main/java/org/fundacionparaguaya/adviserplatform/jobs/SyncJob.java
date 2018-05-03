@@ -2,6 +2,7 @@ package org.fundacionparaguaya.adviserplatform.jobs;
 
 import android.support.annotation.NonNull;
 
+import android.util.Log;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
@@ -9,6 +10,7 @@ import com.evernote.android.job.JobRequest;
 import org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager;
 import org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager;
 import org.fundacionparaguaya.adviserplatform.util.MixpanelHelper;
+import timber.log.Timber;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -21,17 +23,19 @@ public class SyncJob extends Job {
     private static final long SYNC_INTERVAL_MS = 900000; //15 mins
     private SyncManager mSyncManager;
     private AuthenticationManager mAuthManager;
-    private AtomicBoolean mIsAlive = new AtomicBoolean(false);
+    private AtomicBoolean mIsAlive = new AtomicBoolean();
 
     public SyncJob(SyncManager syncManager, AuthenticationManager authManager) {
         super();
         this.mSyncManager = syncManager;
         this.mAuthManager = authManager;
+        mIsAlive.set(true);
     }
 
     @Override
     protected void onCancel() {
-        mIsAlive.set(false);
+      //  mIsAlive.set(false);
+        Timber.d("Cancel requested... (We'll do our best)");
     }
 
     @Override
@@ -39,14 +43,12 @@ public class SyncJob extends Job {
     protected Result onRunJob(@NonNull Params params) {
         MixpanelHelper.SyncEvents.syncStarted(getContext());
 
-        mIsAlive.set(true);
-
         if(mAuthManager.getStatus() != AuthenticationManager.AuthenticationStatus.AUTHENTICATED)
         {
             return Result.RESCHEDULE;
         }
 
-        if(params.isExact())
+        if(params.isExact()) //cancel any scheduled jobs cause we running RIGHT HERE, RIGHT NOW BOI
         {
             stopPeriodic();
         }
@@ -60,10 +62,12 @@ public class SyncJob extends Job {
             syncResult = Result.FAILURE;
 
         if(params.isExact()) {
-            schedulePeriodic();
+            schedulePeriodic(); //enough fun, let's get those regularly scheduled jobs back in
         }
 
         MixpanelHelper.SyncEvents.syncEnded(getContext(), syncResult == Result.SUCCESS);
+
+        Log.d(TAG, "Sync is over");
 
         return syncResult;
     }
@@ -77,11 +81,10 @@ public class SyncJob extends Job {
 
     public static void schedulePeriodic() {
         new JobRequest.Builder(TAG)
-                .setPeriodic(SYNC_INTERVAL_MS, JobRequest.MIN_FLEX)
+                .setPeriodic(SYNC_INTERVAL_MS, 600000)
                 .setRequiresDeviceIdle(false)
                 .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
                 .setRequirementsEnforced(true)
-                .setUpdateCurrent(true)
                 .build()
                 .schedule();
     }
