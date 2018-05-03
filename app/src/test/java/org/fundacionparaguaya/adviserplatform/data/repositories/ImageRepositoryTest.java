@@ -58,7 +58,7 @@ public class ImageRepositoryTest {
 
         when(mSurveyRepository.getSurveysNow()).thenReturn(surveys);
 
-        imageRepository().sync();
+        imageRepository().sync(null);
 
         int numOfPictures = 0;
 
@@ -82,7 +82,7 @@ public class ImageRepositoryTest {
         List<Survey> surveys = surveyList();
 
         when(mSurveyRepository.getSurveysNow()).thenReturn(surveys);
-        imageRepository().sync();
+        imageRepository().sync(null);
         verify(imagePipeline, never()).prefetchToDiskCache(any(), any());
     }
 

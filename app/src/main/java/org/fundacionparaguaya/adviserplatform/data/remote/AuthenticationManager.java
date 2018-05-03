@@ -190,7 +190,7 @@ public class AuthenticationManager {
 
         mStatus.postValue(newStatus);
 
-        mHandler.onAuthStateChange(newStatus);
+        if(mHandler!=null) mHandler.onAuthStateChange(newStatus);
 
         return newStatus;
     }
