@@ -5,23 +5,16 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import org.fundacionparaguaya.adviserplatform.BuildConfig;
-import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.IrMapper;
-import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.LoginIr;
-import org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager;
-import org.fundacionparaguaya.adviserplatform.jobs.SyncJob;
 import org.fundacionparaguaya.adviserplatform.data.model.Login;
 import org.fundacionparaguaya.adviserplatform.data.model.User;
-
-import java.io.IOException;
+import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.IrMapper;
+import org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation.LoginIr;
 
 import javax.inject.Singleton;
+import java.io.IOException;
 
-import static org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager.AuthenticationStatus.AUTHENTICATED;
-import static org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager.AuthenticationStatus.PENDING;
-import static org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager.AuthenticationStatus.UNAUTHENTICATED;
-import static org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager.AuthenticationStatus.UNKNOWN;
+import static org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager.AuthenticationStatus.*;
 
 /**
  * A manager for all things authentication related.
@@ -41,7 +34,6 @@ public class AuthenticationManager {
         AUTHENTICATED
     }
 
-    private SyncManager mSyncManager;
     private SharedPreferences mPreferences;
     private AuthenticationService mAuthService;
     private User mUser;

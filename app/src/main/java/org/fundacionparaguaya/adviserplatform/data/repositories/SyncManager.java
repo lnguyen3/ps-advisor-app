@@ -222,7 +222,7 @@ public class SyncManager implements AuthenticationManager.AuthStateChangeHandler
 
     public static class CleanTask extends AsyncTask<Void, Void, Void>
     {
-        WeakReference<SyncManager> mSyncManager;
+        private WeakReference<SyncManager> mSyncManager;
 
         CleanTask(SyncManager manager)
         {

@@ -41,7 +41,7 @@ public class ImageRepository extends BaseRepository {
      * Synchronizes the local snapshots with the remote database.
      * @return Whether the sync was successful.
      */
-    boolean sync(@Nullable Date lastSync) {
+    public boolean sync(@Nullable Date lastSync) {
 
         boolean result = true;
 

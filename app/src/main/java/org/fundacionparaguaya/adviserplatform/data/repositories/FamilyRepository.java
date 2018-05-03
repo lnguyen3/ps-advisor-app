@@ -77,7 +77,7 @@ public class FamilyRepository extends BaseRepository {
      * Synchronizes the local families with the remote database.
      * @return Whether the sync was successful.
      */
-    boolean sync(@Nullable Date lastSync) {
+    public boolean sync(@Nullable Date lastSync) {
         boolean result = pullFamilies(lastSync);
         clearSyncStatus();
 

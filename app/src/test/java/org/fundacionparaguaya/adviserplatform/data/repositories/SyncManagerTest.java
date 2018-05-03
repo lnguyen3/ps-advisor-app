@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.content.SharedPreferences;
 import android.test.suitebuilder.annotation.SmallTest;
-
 import org.fundacionparaguaya.adviserplatform.data.remote.ConnectivityWatcher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,30 +12,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.LAST_SYNC_ERROR_MARGIN;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.ERROR_NO_INTERNET;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.ERROR_OTHER;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.NEVER;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.SYNCED;
-import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.SYNCING;
+import static org.fundacionparaguaya.adviserplatform.data.repositories.SyncManager.SyncState.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * A test for the SyncManager.
