@@ -22,10 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import io.rmiri.buttonloading.ButtonLoading;
 import org.fundacionparaguaya.adviserplatform.AdviserApplication;
-import org.fundacionparaguaya.adviserplatform.BuildConfig;
 import org.fundacionparaguaya.adviserplatform.R;
 import org.fundacionparaguaya.adviserplatform.data.model.User;
 import org.fundacionparaguaya.adviserplatform.data.remote.AuthenticationManager;
@@ -60,7 +58,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
     protected LoginViewModel mViewModel;
 
     private ImageView mFPLogo;
-    private MixpanelAPI mMixpanel;
 
     private String FIRST_TIME_USER_KEY = "FIRST_TIME_USER_KEY";
 
@@ -75,14 +72,6 @@ public class LoginFragment extends Fragment implements TextWatcher {
         mViewModel = ViewModelProviders
                 .of(getActivity(), mViewModelFactory)
                 .get(LoginViewModel.class);
-
-        mMixpanel = MixpanelAPI.getInstance(getContext(), BuildConfig.MIXPANEL_API_KEY_STRING);
-    }
-
-    @Override
-    public void onDestroyView() {
-        mMixpanel.flush();
-        super.onDestroyView();
     }
 
     @Nullable
