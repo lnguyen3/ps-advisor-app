@@ -70,6 +70,11 @@ public class ModelUtils {
         economicQuestions.add(new BackgroundQuestion("activityMain",
                 "Ingrese su actividad principal.", false, STRING, ECONOMIC,
                 activityMainOptions));
+        activityMainOptions.put("Agricultura, Silvicultura y Pesca", "AGRICULTURE");
+        activityMainOptions.put("Minas y Canteras", "MINING-QUARRYING");
+        economicQuestions.add(new BackgroundQuestion("activitySecondary",
+                "Ingrese su actividad otro.", false, STRING, ECONOMIC,
+                activityMainOptions));
         List<IndicatorQuestion> indicatorQuestions = new ArrayList<>();
         List<IndicatorOption> incomeOptions = new ArrayList<>();
         incomeOptions.add(indicatorOption("1-3.jpg", "la línea de la pobreza", Green));

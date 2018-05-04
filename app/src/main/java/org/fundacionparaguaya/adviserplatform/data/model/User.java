@@ -2,6 +2,7 @@ package org.fundacionparaguaya.adviserplatform.data.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * A user which can use the application.
@@ -59,6 +60,11 @@ public class User {
         public User build() {
             return new User(username, password, login);
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

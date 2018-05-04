@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  *  An indicator option is a definition for one of the three levels an indicator can have. It's level is determined
@@ -47,6 +48,11 @@ public class IndicatorOption implements Comparable<IndicatorOption> {
 
     public void setIndicator(Indicator indicator) {
         this.indicator = indicator;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override
