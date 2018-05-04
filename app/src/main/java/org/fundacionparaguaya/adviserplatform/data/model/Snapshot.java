@@ -1,8 +1,15 @@
 package org.fundacionparaguaya.adviserplatform.data.model;
 
-import android.arch.persistence.room.*;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.fundacionparaguaya.adviserplatform.data.local.Converters;
@@ -10,7 +17,11 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 import static org.fundacionparaguaya.adviserplatform.data.model.BackgroundQuestion.QuestionType.ECONOMIC;
@@ -58,9 +69,6 @@ public class Snapshot implements Comparable<Snapshot>{
     private List<LifeMapPriority> priorities;
     @ColumnInfo(name = "created_at")
     private Date createdAt;
-
-    @Ignore
-    boolean mIsLatest;
 
     @Ignore
     public Snapshot(Survey survey) {
@@ -236,28 +244,17 @@ public class Snapshot implements Comparable<Snapshot>{
     public String toString() {
         String dateString;
 
-        if(DateUtils.isToday(createdAt.getTime()))
-        {
+        if (DateUtils.isToday(createdAt.getTime())) {
             PrettyTime prettyTime = new PrettyTime();
             dateString = prettyTime.format(createdAt);
-        }
-        else
-        {
+        } else {
             dateString = new DateTime(createdAt).toString(DateTimeFormat.mediumDate());
         }
 
         return dateString;
     }
 
-    /**Kinda hacky fix to the fact that it's easiest for spinners to hold objects
-     * with a toString... and we want the toString to report "Latest" when the snapshot is the latest
-     * (instead of the date)
-     * //TODO someday implement this on the mapper side (or custom adapter for spinner) @krconv
-     */
-    public void setIsLatest(boolean isLatest)
-    {
-        mIsLatest = isLatest;
-    }
+
 
     @Override
     public boolean equals(Object o) {
