@@ -2,7 +2,7 @@ package org.fundacionparaguaya.adviserplatform.data.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import timber.log.Timber;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import timber.log.Timber;
 
 import static java.lang.String.format;
 
@@ -58,6 +60,11 @@ public class Indicator {
         for (IndicatorOption option : options) { // add references to this indicator
             option.setIndicator(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

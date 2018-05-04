@@ -1,16 +1,42 @@
 package org.fundacionparaguaya.adviserplatform.data.remote.intermediaterepresentation;
 
-import org.fundacionparaguaya.adviserplatform.data.model.*;
-import timber.log.Timber;
+import org.fundacionparaguaya.adviserplatform.data.model.BackgroundQuestion;
+import org.fundacionparaguaya.adviserplatform.data.model.Family;
+import org.fundacionparaguaya.adviserplatform.data.model.FamilyMember;
+import org.fundacionparaguaya.adviserplatform.data.model.Indicator;
+import org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption;
+import org.fundacionparaguaya.adviserplatform.data.model.IndicatorQuestion;
+import org.fundacionparaguaya.adviserplatform.data.model.LifeMapPriority;
+import org.fundacionparaguaya.adviserplatform.data.model.Login;
+import org.fundacionparaguaya.adviserplatform.data.model.ResponseType;
+import org.fundacionparaguaya.adviserplatform.data.model.Snapshot;
+import org.fundacionparaguaya.adviserplatform.data.model.Survey;
 
-import java.text.*;
-import java.util.*;
+import java.text.CharacterIterator;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.text.StringCharacterIterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+
+import timber.log.Timber;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.fundacionparaguaya.adviserplatform.data.model.BackgroundQuestion.QuestionType.ECONOMIC;
 import static org.fundacionparaguaya.adviserplatform.data.model.BackgroundQuestion.QuestionType.PERSONAL;
-import static org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption.Level.*;
+import static org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption.Level.Green;
+import static org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption.Level.None;
+import static org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption.Level.Red;
+import static org.fundacionparaguaya.adviserplatform.data.model.IndicatorOption.Level.Yellow;
 
 /**
  * A utility for mapping IR objects to their corresponding model objects, and vice versa.
@@ -103,27 +129,32 @@ public class IrMapper {
             return Collections.emptyList();
         }
 
-        List<String> names = type == PERSONAL ?
+        List<String> allQuestionsOrdered = ir.uiSchema.order;
+        List<String> questionsToMap = type == PERSONAL ?
                 ir.uiSchema.personalQuestions : ir.uiSchema.economicQuestions;
-        if (names == null) return Collections.emptyList();
+        if (allQuestionsOrdered == null || questionsToMap == null) return Collections.emptyList();
 
-        List<BackgroundQuestion> questions = new ArrayList<>();
-        for (String name : names) {
-            SurveyQuestionIr questionIr = ir.schema.questions.get(name);
-            if (questionIr == null) {
-                Timber.w( format("mapBackground: A non-existent question (%s) was referenced in "
-                        + "survey (id: %d) UI schema!", name, ir.id));
+        List<BackgroundQuestion> mappedQuestions = new ArrayList<>();
+        for (String questionName : allQuestionsOrdered) {
+            if (!questionsToMap.contains(questionName)) {
                 continue;
             }
-            questions.add(new BackgroundQuestion(
-                    name,
+
+            SurveyQuestionIr questionIr = ir.schema.questions.get(questionName);
+            if (questionIr == null) {
+                Timber.w( format("mapBackground: A non-existent question (%s) was referenced in "
+                        + "survey (id: %d) UI schema!", questionName, ir.id));
+                continue;
+            }
+            mappedQuestions.add(new BackgroundQuestion(
+                    questionName,
                     questionIr.title.get("es"),
-                    ir.schema.requiredQuestions.contains(name),
-                    mapResponseType(questionIr, ir.uiSchema.customFields.get(name)),
+                    ir.schema.requiredQuestions.contains(questionName),
+                    mapResponseType(questionIr, ir.uiSchema.customFields.get(questionName)),
                     type,
                     mapBackgroundOptions(questionIr.optionNames, questionIr.options)));
         }
-        return questions;
+        return mappedQuestions;
     }
 
     private static List<IndicatorQuestion> mapIndicator(SurveyIr ir) {

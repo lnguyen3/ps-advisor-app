@@ -8,6 +8,8 @@ import android.arch.persistence.room.TypeConverters;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.fundacionparaguaya.adviserplatform.data.local.Converters;
 
 import java.util.List;
@@ -90,6 +92,11 @@ public class Survey {
 
     public List<IndicatorQuestion> getIndicatorQuestions() {
         return indicatorQuestions;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, new MultilineRecursiveToStringStyle());
     }
 
     @Override

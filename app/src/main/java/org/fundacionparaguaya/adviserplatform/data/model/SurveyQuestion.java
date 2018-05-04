@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * A question which can be presented to a family and responded to from a survey.
@@ -40,6 +41,11 @@ public class SurveyQuestion {
 
     public ResponseType getResponseType(){
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

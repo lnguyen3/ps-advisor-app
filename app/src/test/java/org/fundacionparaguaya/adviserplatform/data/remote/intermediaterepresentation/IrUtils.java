@@ -79,6 +79,7 @@ public class IrUtils {
         ir.questions.put("firstName", firstNameQuestionIr());
         ir.questions.put("income", incomeQuestionIr());
         ir.questions.put("activityMain", activityMainQuestionIr());
+        ir.questions.put("activitySecondary", activitySecondaryQuestionIr());
         return ir;
     }
 
@@ -121,15 +122,23 @@ public class IrUtils {
         return ir;
     }
 
+    public static SurveyQuestionIr activitySecondaryQuestionIr() {
+        SurveyQuestionIr questionIr = activityMainQuestionIr();
+        questionIr.title.put("es", "Ingrese su actividad otro.");
+        return questionIr;
+    }
+
     public static SurveyUiSchemaIr surveyUiSchemaIr() {
         SurveyUiSchemaIr ir = new SurveyUiSchemaIr();
         ir.order = new ArrayList<>();
         ir.order.add("firstName");
         ir.order.add("activityMain");
+        ir.order.add("activitySecondary");
         ir.order.add("income");
         ir.personalQuestions = new ArrayList<>();
         ir.personalQuestions.add("firstName");
         ir.economicQuestions = new ArrayList<>();
+        ir.economicQuestions.add("activitySecondary");
         ir.economicQuestions.add("activityMain");
         ir.indicatorQuestions = new ArrayList<>();
         ir.indicatorQuestions.add("income");
