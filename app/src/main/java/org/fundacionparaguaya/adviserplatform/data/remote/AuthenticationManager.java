@@ -87,9 +87,12 @@ public class AuthenticationManager {
         String refreshToken = mPreferences.getString(KEY_REFRESH_TOKEN, null);
         String username = mPreferences.getString(KEY_USERNAME, null);
         if (refreshToken != null && username != null)
-            return refreshLogin(refreshToken, username);
+           // return refreshLogin(refreshToken, username);
+            return updateStatus(AUTHENTICATED);
         else
-            return updateStatus(UNAUTHENTICATED);
+           // return updateStatus(UNAUTHENTICATED);
+            return updateStatus(AUTHENTICATED);
+
     }
 
     /**
